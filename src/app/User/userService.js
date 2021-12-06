@@ -49,12 +49,12 @@ exports.createUserAccount = async (id, name, password, address, phone, email) =>
 
       const result = {'jwt': token};
 
-      //jwt 생성
       await connection.commit();
       connection.release();
 
       return response(baseResponse.SUCCESS, result);
     }catch(err){
+      await connection.rollback();
       connection.release();
       logger.error(`createUserAccount DB Query Error: ${err}`);
       return errResponse(baseResponse.DB_ERROR);
