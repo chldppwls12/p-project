@@ -29,3 +29,25 @@ exports.createUserAccount = async (connection, params) => {
   const [rows] = await connection.query(query, params);
   return rows;
 }
+
+//존재하는 유저 정보인지
+exports.isExistUser = async (connection, params) => {
+  const query = `
+  SELECT EXISTS(SELECT userIdx
+    FROM User
+    WHERE id = ? && password = ?) as isExist;
+  `;
+  const [rows] = await connection.query(query, params);
+  return rows[0]['isExist'];
+}
+
+//userIdx
+exports.getUserIdx = async (connection, params) => {
+  const query = `
+  SELECT userIdx
+  FROM User
+  WHERE id = ? && password = ?;
+  `;
+  const [rows] = await connection.query(query, params);
+  return rows[0]['userIdx'];
+}

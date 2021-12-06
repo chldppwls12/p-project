@@ -9,5 +9,7 @@ module.exports = {
   DUPLICATED_ID: {isSuccess: false, code: 2300, message: '중복된 아이디입니다'},
   DUPLICATED_EMAIL: {isSuccess: false, code: 2301, message: '중복된 이메일입니다'},
 
+  NOT_EXIST_USER_INFO: {isSuccess: false, code: 3100, message: '회원 정보가 존재하지 않습니다'},
+
   DB_ERROR: {isSuccess: false, code: 4000, message: 'DB 에러'},
 }
