@@ -51,3 +51,13 @@ exports.getUserIdx = async (connection, params) => {
   const [rows] = await connection.query(query, params);
   return rows[0]['userIdx'];
 }
+
+//유저 정보
+exports.getUserInfo = async (connection, params) => {
+  const query = `
+  SELECT id, phone, address FROM User
+  WHERE userIdx = ?;
+  `;
+  const [rows] = await connection.query(query, params);
+  return rows[0];
+}

@@ -32,3 +32,16 @@ exports.login = async (req, res) => {
 
   return res.send(login);
 }
+
+/*
+  API num: 1.3
+  name: 회원 정보 조회 API
+  [GET] /app/user
+*/
+exports.getUserInfo = async (req, res) => {
+  const {userIdx} = req.verifiedToken;
+
+  const getUserInfo = await userProvider.getUserInfo(userIdx);
+
+  return res.send(getUserInfo);
+}

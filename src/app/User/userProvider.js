@@ -38,3 +38,28 @@ exports.login = async (id, password) => {
     return errResponse(baseResponse.DB_ERROR);
   }
 }
+
+exports.getUserInfo = async (userIdx) => {
+  try{
+    const connection = await pool.getConnection(async conn => conn);
+    try{
+      const userInfo = await userDao.getUserInfo(connection, [userIdx]);
+      
+      const result = {
+        'id': userInfo.id,
+        'phone': userInfo.phone,
+        'address': userInfo.address
+      }
+
+      connection.release();
+      return response(baseResponse.SUCCESS, result);
+    }catch(err){
+      connection.release();
+      logger.error(`getUserInfo DB Query Error: ${err}`);
+      return errResponse(baseResponse.DB_ERROR);
+    }
+  }catch(err){
+    logger.error(`getUserInfo DB Connection Error: ${err}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
