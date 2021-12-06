@@ -61,3 +61,14 @@ exports.getUserInfo = async (connection, params) => {
   const [rows] = await connection.query(query, params);
   return rows[0];
 }
+
+//회원 정보 업데이트
+exports.updateUserInfo = async (connection, params) => {
+  const query = `
+  UPDATE User
+  SET password = IFNULL(?, password), address = IFNULL(?, address), phone = IFNULL(?, phone)
+  WHERE userIdx = ?;
+  `;
+  const [rows] = await connection.query(query, params);
+  return rows;
+}

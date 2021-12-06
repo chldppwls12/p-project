@@ -4,6 +4,7 @@ module.exports = {
   JWT_EMPTY: {isSuccess: false, code: 2000, message: '로그인을 해주세요'},
 
   IS_EMPTY: {isSuccess: false, code: 2100, message: '공백이 있습니다'},
+  INPUT_UPDATE_INFO: {isSuccess: false, code: 2100, message: '수정할 정보를 입력해주세요'},
 
   INVALID_PHONE_FORMAT: {isSuccess: false, code: 2200, message: '핸드폰 형식을 확인해주세요'},
   INVALID_EMAIL_FORMAT: {isSuccess: false, code: 2201, message: '이메일 형식을 확인해주세요'},

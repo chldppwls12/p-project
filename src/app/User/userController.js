@@ -45,3 +45,20 @@ exports.getUserInfo = async (req, res) => {
 
   return res.send(getUserInfo);
 }
+
+/*
+  API num: 1.4
+  name: 회원 정보 수정 API
+  [PATCH] /app/user
+  body: password, address, phone
+*/
+exports.updateUserInfo = async (req, res) => {
+  const {userIdx} = req.verifiedToken;
+  const {password, address, phone} = req.body;
+  
+  if (!(password || address || phone)) return res.send(errResponse(baseResponse.INPUT_UPDATE_INFO));
+
+  const updateUserInfo = await userService.updateUserInfo(userIdx, password, address, phone);
+
+  return res.send(updateUserInfo);
+}

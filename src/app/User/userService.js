@@ -64,3 +64,29 @@ exports.createUserAccount = async (id, name, password, address, phone, email) =>
     return errResponse(baseResponse.DB_ERROR);
   }
 }
+
+exports.updateUserInfo = async (userIdx, password, address, phone) => {
+  try{
+    const connection = await pool.getConnection(async conn => conn);
+    try{
+      if (phone){
+        if (!checkPhoneFormat(phone)) return errResponse(baseResponse.INVALID_PHONE_FORMAT);
+      }
+
+      await connection.beginTransaction();
+      await userDao.updateUserInfo(connection, [password, address, phone, userIdx]);
+      await connection.commit();
+      connection.release();
+
+      return response(baseResponse.SUCCESS);
+    }catch(err){
+      await connection.rollback();
+      connection.release();
+      logger.error(`updateUserInfo DB Query Error: ${err}`);
+      return errResponse(baseResponse.DB_ERROR);
+    }
+  }catch(err){
+    logger.error(`updateUserInfo DB Connection Error: ${err}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}

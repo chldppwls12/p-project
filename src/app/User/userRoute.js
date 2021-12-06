@@ -10,4 +10,7 @@ module.exports = function(app){
 
   //회원 정보 조회 API
   app.get('/app/user', jwtMiddleware, userController.getUserInfo);
+
+  //회원 정보 수정 API
+  app.patch('/app/user', jwtMiddleware, userController.updateUserInfo);
 }
