@@ -1,6 +1,7 @@
 const {response, errResponse} = require('../../../config/response');
 const baseResponse = require('../../../config/baseResponseStatus');
 const packageProvider = require('./packageProvider');
+const packageService = require('./packageService');
 
 /*
   API num: 1.1
@@ -26,4 +27,18 @@ exports.getRobbedPackageList = async (req, res) => {
   const getRobbedPackageList = await packageProvider.getRobbedPackageList(userIdx);
 
   return res.send(getRobbedPackageList);
+}
+
+/*
+  API num: 2.3
+  name: 택배 수령 여부 변경 API
+  [GET] /app/packages/:packageIdx/status
+*/
+exports.changePackageRecievedStatus = async (req, res) => {
+  const {userIdx} = req.verifiedToken;
+  const {packageIdx} = req.params;
+  
+  const changePackageRecievedStatus = await packageService.changePackageRecievedStatus(userIdx, packageIdx);
+
+  return res.send(changePackageRecievedStatus);
 }
