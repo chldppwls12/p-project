@@ -52,3 +52,49 @@ exports.createPackage = async (userIdx, imageUrl, trackingNumber, companyCode) =
     return errResponse(baseResponse.DB_ERROR);
   }
 }
+
+exports.changeRobbedStatus = async (robbedImageUrl, trackingNumber, companyCode) => {
+  try{
+    const connection = await pool.getConnection(async conn => conn);
+    try{
+
+      //존재하는 택배인지
+      const isExistPackage = await packageDao.isExistPackage(connection, [trackingNumber, companyCode]);
+      if (!isExistPackage) return errResponse(baseResponse.DOES_NOT_EXIST_PACKAGE);
+
+      //이미 수령한 택배일 경우
+      const isReceivedPackage = await packageDao.isReceivedPackage(connection, [trackingNumber, companyCode]);
+      if (isReceivedPackage) return errResponse(baseResponse.CAN_NOT_CHANGE_RECEIVED_PACKAGE_STATUS);
+
+      //현재 도난 상태 확인
+      const currentPackageStatus = await packageDao.currentPackageStatus(connection, [trackingNumber, companyCode]);
+      
+      let result = {};
+
+      await connection.beginTransaction();
+
+      if (currentPackageStatus === 'ROBBED'){
+        await packageDao.changeToNotRobbed(connection, [trackingNumber, companyCode]);
+        result.isRobbed = 'N';
+      }
+      else if (currentPackageStatus === 'NOT_ROBBED'){
+        await packageDao.changeToTobbed(connection, [robbedImageUrl, trackingNumber, companyCode]);
+        result.isRobbed = 'Y';
+      }
+
+      await connection.commit();
+
+      connection.release();
+      return response(baseResponse.SUCCESS, result);
+
+    }catch(err){
+      await connection.rollback();
+      connection.release();
+      logger.error(`changeRobbedStatus DB Query Error: ${err}`);
+      return errResponse(baseResponse.DB_ERROR);
+    }
+  }catch(err){
+    logger.error(`changeRobbedStatus DB Connection Error: ${err}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}

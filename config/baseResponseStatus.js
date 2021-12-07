@@ -27,6 +27,9 @@ module.exports = {
   NO_AUTHORITY: {isSuccess: false, code: 3400, message: '권한이 없습니다'},
 
   CAN_NOT_CHANGE_ROBBED_PACKAGE_STATUS: {isSuccess: false, code: 3500, message: '도난 택배의 상태는 변경할 수 없습니다'},
+  CAN_NOT_CHANGE_RECEIVED_PACKAGE_STATUS: {isSuccess: false, code: 3501, message: '이미 수령한 택배입니다'},
+
+  DOES_NOT_EXIST_PACKAGE: {isSuccess: false, code: 3500, message: '존재하는 택배가 아닙니다'},
 
   IS_ALREADY_CREATED_PACKAGE: {isSuccess: false, code: 3600, message: '이미 등록된 택배입니다'},
 
