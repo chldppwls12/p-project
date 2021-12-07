@@ -12,5 +12,7 @@ module.exports = function(){
   app.use(express.urlencoded({extended: true}));
   app.use(cors());
 
+  require('../src/device/Package/packageRoute')(app);
+
   return app;
 }
