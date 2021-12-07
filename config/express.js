@@ -15,6 +15,7 @@ module.exports = function(){
   require('../src/app/User/userRoute')(app);
 
   require('../src/app/Package/packageRoute')(app);
+  require('../src/device/Package/packageRoute')(app);
 
   return app;
 }
