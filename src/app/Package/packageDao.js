@@ -9,7 +9,7 @@ exports.getAllPackageList = async (connection, params) => {
         IF(robbedAt is null, 'N', 'Y')                as isRobbed,
         IF(receivedAt is null, 'N', 'Y')                as isReceived
   FROM Package
-  WHERE userIdx = 6
+  WHERE userIdx = ?
   ORDER BY packageIdx DESC;
   `;
   const [rows] = await connection.query(query, params);
