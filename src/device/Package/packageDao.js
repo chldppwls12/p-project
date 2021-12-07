@@ -77,3 +77,13 @@ exports.changeToTobbed = async (connection, params) => {
   const [rows] = await connection.query(query, params);
   return rows;
 }
+
+//수령 상태 확인
+exports.packageReceivedStatus = async (connection, params) => {
+  const query = `
+  SELECT IF(receivedAt IS NULL, 'NOT_RECEIVED', 'RECEIVED') as status FROM Package
+  WHERE trackingNumber = ? && companyCode = ?
+  `;
+  const [rows] = await connection.query(query, params);
+  return rows[0]['status'];
+}
