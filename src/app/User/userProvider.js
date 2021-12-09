@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
 
-exports.login = async (id, password) => {
+exports.login = async (id, password, deviceToken) => {
   try{
     const connection = await pool.getConnection(async conn => conn);
     try{
@@ -23,6 +23,9 @@ exports.login = async (id, password) => {
         process.env.JWT_SECRET,
         {expiresIn: '14d'}
       )
+
+      //deviceToken 저장하기
+      await userDao.storeDeviceToken(connection, [deviceToken, userIdx]);
       
       const result = {jwt: token};
 

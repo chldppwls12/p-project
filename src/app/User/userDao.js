@@ -72,3 +72,13 @@ exports.updateUserInfo = async (connection, params) => {
   const [rows] = await connection.query(query, params);
   return rows;
 }
+
+//deviceToken 저장하기
+exports.storeDeviceToken = async (connection, params) => {
+  const query = `
+  UPDATE User SET deviceToken = ?
+  WHERE userIdx = ?;
+  `;
+  const [rows] = await connection.query(query, params);
+  return rows;
+}
