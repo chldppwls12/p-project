@@ -22,13 +22,13 @@ exports.createUserAccount = async (req, res) => {
   API num: 1.2
   name: 로그인 API
   [POST] /app/login
-  body: id, password
+  body: id, password, deviceToken
 */
 exports.login = async (req, res) => {
-  const {id, password} = req.body;
-  if (!(id && password)) return res.send(errResponse(baseResponse.IS_EMPTY));
+  const {id, password, deviceToken} = req.body;
+  if (!(id && password && deviceToken)) return res.send(errResponse(baseResponse.IS_EMPTY));
 
-  const login = await userProvider.login(id, password);
+  const login = await userProvider.login(id, password, deviceToken);
 
   return res.send(login);
 }
