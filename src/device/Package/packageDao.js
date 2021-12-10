@@ -58,16 +58,6 @@ exports.currentPackageStatus = async (connection, params) => {
   return rows[0]['status'];
 }
 
-//도난 -> 도난X으로 변경
-exports.changeToNotRobbed = async (connection, params) => {
-  const query = `
-  UPDATE Package SET robbedAt = NULL, robbedImageUrl = NULL
-  WHERE trackingNumber = ? && companyCode = ?;
-  `;
-  const [rows] = await connection.query(query, params);
-  return rows;
-}
-
 //도난X -> 도난으로 변경
 exports.changeToTobbed = async (connection, params) => {
   const query = `

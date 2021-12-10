@@ -21,13 +21,13 @@ exports.createPackage = async (req, res) => {
 
 /*
   API num: 3.2
-  name: 택배 도난 여부 변경
+  name: 택배 도난 처리
   [PATCH] /device/packages/status
   body: imageUrl, trackingNumber, companyCode
 */
 exports.changeRobbedStatus = async (req, res) => {
   const {imageUrl: robbedImageUrl, trackingNumber, companyCode} = req.body;
-  if (!(trackingNumber && companyCode)) return res.send(errResponse(baseResponse.IS_EMPTY));
+  if (!(robbedImageUrl && trackingNumber && companyCode)) return res.send(errResponse(baseResponse.IS_EMPTY));
 
   const changeRobbedStatus = await packageService.changeRobbedStatus(robbedImageUrl, trackingNumber, companyCode);
 

@@ -71,24 +71,17 @@ exports.changeRobbedStatus = async (robbedImageUrl, trackingNumber, companyCode)
 
       //현재 도난 상태 확인
       const currentPackageStatus = await packageDao.currentPackageStatus(connection, [trackingNumber, companyCode]);
-      
-      let result = {};
-
-      await connection.beginTransaction();
 
       if (currentPackageStatus === 'ROBBED'){
-        await packageDao.changeToNotRobbed(connection, [trackingNumber, companyCode]);
-        result.isRobbed = 'N';
-      }
-      else if (currentPackageStatus === 'NOT_ROBBED'){
-        await packageDao.changeToTobbed(connection, [robbedImageUrl, trackingNumber, companyCode]);
-        result.isRobbed = 'Y';
+        return errResponse(baseResponse.IS_ALREADY_ROBBED_PACKAGE);
       }
 
+      await connection.beginTransaction();
+      await packageDao.changeToTobbed(connection, [robbedImageUrl, trackingNumber, companyCode]);
       await connection.commit();
 
       connection.release();
-      return response(baseResponse.SUCCESS, result);
+      return response(baseResponse.SUCCESS);
 
     }catch(err){
       await connection.rollback();
