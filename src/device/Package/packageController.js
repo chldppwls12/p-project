@@ -7,13 +7,14 @@ const packageProvider = require('./packageProvider');
   API num: 3.1
   name: 택배 도착 처리 API
   [POST] /device/packages
-  body: userIdx, imageUrl, trackingNumber, companyCode
+  body: imageUrl, trackingNumber, companyCode
 */
+// userIdx 고정으로 변경
 exports.createPackage = async (req, res) => {
-  const {userIdx, imageUrl, trackingNumber, companyCode} = req.body;
-  if (!(userIdx && imageUrl && trackingNumber && companyCode)) return res.send(errResponse(baseResponse.IS_EMPTY));
+  const {imageUrl, trackingNumber, companyCode} = req.body;
+  if (!(imageUrl && trackingNumber && companyCode)) return res.send(errResponse(baseResponse.IS_EMPTY));
 
-  const createPackage = await packageService.createPackage(userIdx, imageUrl, trackingNumber, companyCode);
+  const createPackage = await packageService.createPackage(imageUrl, trackingNumber, companyCode);
 
   return res.send(createPackage);
 }

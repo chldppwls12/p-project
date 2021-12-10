@@ -7,10 +7,13 @@ const axios = require('axios');
 
 require('dotenv').config();
 
-exports.createPackage = async (userIdx, imageUrl, trackingNumber, companyCode) => {
+//userIdx 고정으로 변경
+exports.createPackage = async (imageUrl, trackingNumber, companyCode) => {
   try{
     const connection = await pool.getConnection(async conn => conn);
     try{
+
+      const userIdx = 6;  //고정한 userIdx
 
       //유효한 userIdx인지
       const isExistUserIdx = await packageDao.isExistUserIdx(connection, [userIdx]);
