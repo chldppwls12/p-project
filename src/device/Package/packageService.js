@@ -7,10 +7,13 @@ const axios = require('axios');
 
 require('dotenv').config();
 
-exports.createPackage = async (userIdx, imageUrl, trackingNumber, companyCode) => {
+//userIdx 고정으로 변경
+exports.createPackage = async (imageUrl, trackingNumber, companyCode) => {
   try{
     const connection = await pool.getConnection(async conn => conn);
     try{
+
+      const userIdx = 6;  //고정한 userIdx
 
       //유효한 userIdx인지
       const isExistUserIdx = await packageDao.isExistUserIdx(connection, [userIdx]);
@@ -68,24 +71,17 @@ exports.changeRobbedStatus = async (robbedImageUrl, trackingNumber, companyCode)
 
       //현재 도난 상태 확인
       const currentPackageStatus = await packageDao.currentPackageStatus(connection, [trackingNumber, companyCode]);
-      
-      let result = {};
-
-      await connection.beginTransaction();
 
       if (currentPackageStatus === 'ROBBED'){
-        await packageDao.changeToNotRobbed(connection, [trackingNumber, companyCode]);
-        result.isRobbed = 'N';
-      }
-      else if (currentPackageStatus === 'NOT_ROBBED'){
-        await packageDao.changeToTobbed(connection, [robbedImageUrl, trackingNumber, companyCode]);
-        result.isRobbed = 'Y';
+        return errResponse(baseResponse.IS_ALREADY_ROBBED_PACKAGE);
       }
 
+      await connection.beginTransaction();
+      await packageDao.changeToTobbed(connection, [robbedImageUrl, trackingNumber, companyCode]);
       await connection.commit();
 
       connection.release();
-      return response(baseResponse.SUCCESS, result);
+      return response(baseResponse.SUCCESS);
 
     }catch(err){
       await connection.rollback();

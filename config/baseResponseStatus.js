@@ -33,6 +33,7 @@ module.exports = {
   NOT_STORAGED_PACKAGE: {isSuccess: false, code: 3500, message: 'DB에 등록된 택배가 아닙니다'},
 
   IS_ALREADY_CREATED_PACKAGE: {isSuccess: false, code: 3600, message: '이미 등록된 택배입니다'},
+  IS_ALREADY_ROBBED_PACKAGE: {isSuccess: false, code: 3601, message: '이미 도난 처리한 택배입니다'},
 
   DB_ERROR: {isSuccess: false, code: 4000, message: 'DB 에러'},
 }
