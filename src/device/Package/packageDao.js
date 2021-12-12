@@ -77,3 +77,13 @@ exports.packageReceivedStatus = async (connection, params) => {
   const [rows] = await connection.query(query, params);
   return rows[0]['status'];
 }
+
+//수령되지 않은 택배
+exports.notReceivedPackage = async (connection) => {
+  const query = `
+  SELECT trackingNumber, companyCode FROM Package
+  WHERE receivedAt IS NULL;
+  `;
+  const [rows] = await connection.query(query);
+  return rows;
+}

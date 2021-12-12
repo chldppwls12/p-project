@@ -36,15 +36,11 @@ exports.changeRobbedStatus = async (req, res) => {
 
 /*
   API num: 3.3
-  name: 택배값 조회
+  name: 수령되지 않은 택배 조회
   [GET] /device/packages/status
-  query: trackingNumber, companyCode
 */
-exports.getPackageStatus = async (req, res) => {
-  const {trackingNumber, companyCode} = req.query;
-  if (!(trackingNumber && companyCode)) return res.send(errResponse(baseResponse.IS_EMPTY));
+exports.getNotReceivedPackageStatus = async (req, res) => {
+  const getNotReceivedPackageStatus = await packageProvider.getNotReceivedPackageStatus();
 
-  const getPackageStatus = await packageProvider.getPackageStatus(trackingNumber, companyCode);
-
-  return res.send(getPackageStatus);
+  return res.send(getNotReceivedPackageStatus);
 }
