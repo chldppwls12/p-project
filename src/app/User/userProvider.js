@@ -25,7 +25,7 @@ exports.login = async (id, password, deviceToken) => {
       )
 
       //deviceToken 저장하기
-      await userDao.storeDeviceToken(connection, [deviceToken, userIdx]);
+      if (deviceToken) await userDao.storeDeviceToken(connection, [deviceToken, userIdx]);
       
       const result = {jwt: token};
 
