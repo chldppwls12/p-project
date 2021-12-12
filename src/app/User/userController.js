@@ -26,7 +26,7 @@ exports.createUserAccount = async (req, res) => {
 */
 exports.login = async (req, res) => {
   const {id, password, deviceToken} = req.body;
-  if (!(id && password && deviceToken)) return res.send(errResponse(baseResponse.IS_EMPTY));
+  if (!(id && password)) return res.send(errResponse(baseResponse.IS_EMPTY));
 
   const login = await userProvider.login(id, password, deviceToken);
 
