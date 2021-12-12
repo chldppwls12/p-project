@@ -30,11 +30,17 @@ exports.createUserAccount = async (id, name, password, address, phone, email) =>
 
       //중복된 아이디인지
       const isDuplicatedId = await userDao.isDuplicatedId(connection, [id]);
-      if (isDuplicatedId) return errResponse(baseResponse.DUPLICATED_ID);
+      if (isDuplicatedId){
+        connection.release();
+        return errResponse(baseResponse.DUPLICATED_ID);
+      }
 
       //중복된 이메일인지
       const isDuplicatedEmail = await userDao.isDuplicatedEmail(connection, [email]);
-      if (isDuplicatedEmail) return errResponse(baseResponse.DUPLICATED_EMAIL);
+      if (isDuplicatedEmail){
+        connection.release();
+        return errResponse(baseResponse.DUPLICATED_EMAIL);
+      }
       
       //회원가입
       await connection.beginTransaction();
@@ -70,7 +76,10 @@ exports.updateUserInfo = async (userIdx, password, address, phone) => {
     const connection = await pool.getConnection(async conn => conn);
     try{
       if (phone){
-        if (!checkPhoneFormat(phone)) return errResponse(baseResponse.INVALID_PHONE_FORMAT);
+        if (!checkPhoneFormat(phone)){
+          connection.release();
+          return errResponse(baseResponse.INVALID_PHONE_FORMAT);
+        }
       }
 
       await connection.beginTransaction();

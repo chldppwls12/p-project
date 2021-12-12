@@ -17,7 +17,10 @@ exports.createPackage = async (imageUrl, trackingNumber, companyCode) => {
 
       //유효한 userIdx인지
       const isExistUserIdx = await packageDao.isExistUserIdx(connection, [userIdx]);
-      if (!isExistUserIdx) return errResponse(baseResponse.INVALID_USER_IDX);
+      if (!isExistUserIdx){
+        connection.release();
+        return errResponse(baseResponse.INVALID_USER_IDX);
+      }
 
       //유효한 택배사 코드 + 운송장 번호인지
       const url = `http://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=${process.env.SMART_API_KEY}&t_code=${companyCode}&t_invoice=${trackingNumber}`;
@@ -31,7 +34,10 @@ exports.createPackage = async (imageUrl, trackingNumber, companyCode) => {
 
         //기존에 등록한 택배인지
         const isAlreadyCreatedPackage = await packageDao.isAlreadyCreatedPackage(connection, [userIdx, trackingNumber, companyCode]);
-        if (isAlreadyCreatedPackage) return errResponse(baseResponse.IS_ALREADY_CREATED_PACKAGE);
+        if (isAlreadyCreatedPackage){
+          connection.release();
+          return errResponse(baseResponse.IS_ALREADY_CREATED_PACKAGE);
+        }
 
         //택배 정보 넣기
         await connection.beginTransaction();
@@ -63,16 +69,23 @@ exports.changeRobbedStatus = async (robbedImageUrl, trackingNumber, companyCode)
 
       //존재하는 택배인지
       const isExistPackage = await packageDao.isExistPackage(connection, [trackingNumber, companyCode]);
-      if (!isExistPackage) return errResponse(baseResponse.DOES_NOT_EXIST_PACKAGE);
+      if (!isExistPackage){
+        connection.release();
+        return errResponse(baseResponse.DOES_NOT_EXIST_PACKAGE);
+      }
 
       //이미 수령한 택배일 경우
       const isReceivedPackage = await packageDao.isReceivedPackage(connection, [trackingNumber, companyCode]);
-      if (isReceivedPackage) return errResponse(baseResponse.CAN_NOT_CHANGE_RECEIVED_PACKAGE_STATUS);
+      if (isReceivedPackage){
+        connection.release();
+        return errResponse(baseResponse.CAN_NOT_CHANGE_RECEIVED_PACKAGE_STATUS);
+      }
 
       //현재 도난 상태 확인
       const currentPackageStatus = await packageDao.currentPackageStatus(connection, [trackingNumber, companyCode]);
 
       if (currentPackageStatus === 'ROBBED'){
+        connection.release();
         return errResponse(baseResponse.IS_ALREADY_ROBBED_PACKAGE);
       }
 

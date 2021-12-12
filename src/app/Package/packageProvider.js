@@ -10,7 +10,10 @@ exports.getAllPackageList = async (userIdx) => {
     try{
 
       const packageList = await packageDao.getAllPackageList(connection, [userIdx]);
-      if (!packageList.length) return errResponse(baseResponse.NO_PACKAGE_LIST);
+      if (!packageList.length){
+        connection.release();
+        return errResponse(baseResponse.NO_PACKAGE_LIST);
+      }
       
       let result = [];
 
@@ -45,7 +48,10 @@ exports.getRobbedPackageList = async (userIdx) => {
     try{
 
       const robbedPackageList = await packageDao.getRobbedPackageList(connection, [userIdx]);
-      if (!robbedPackageList.length) return errResponse(baseResponse.NO_ROBBED_PACKAGE_LIST);
+      if (!robbedPackageList.length){
+        connection.release();
+        return errResponse(baseResponse.NO_ROBBED_PACKAGE_LIST);
+      }
       
       let result = [];
 

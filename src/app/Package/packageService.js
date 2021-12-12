@@ -11,15 +11,24 @@ exports.changePackageRecievedStatus = async (userIdx, packageIdx) => {
 
       //존재하는 packageIdx인지
       const isExistPackageIdx = await packageDao.isExistPackageIdx(connection, [packageIdx]);
-      if (!isExistPackageIdx) return errResponse(baseResponse.INVALID_PACKAGE_IDX);
+      if (!isExistPackageIdx){
+        connection.release();
+        return errResponse(baseResponse.INVALID_PACKAGE_IDX);
+      }
 
       //도난 택배인지
       const isRobbedPackage = await packageDao.isRobbedPackage(connection, [packageIdx]);
-      if (isRobbedPackage === 'Y') return errResponse(baseResponse.CAN_NOT_CHANGE_ROBBED_PACKAGE_STATUS);
+      if (isRobbedPackage === 'Y'){
+        connection.release();
+        return errResponse(baseResponse.CAN_NOT_CHANGE_ROBBED_PACKAGE_STATUS);
+      }
 
       //수령 여부 변경 권한 확인
       const isUserPackage = await packageDao.isUserPackage(connection, [userIdx, packageIdx]);
-      if (!isUserPackage) return errResponse(baseResponse.NO_AUTHORITY);
+      if (!isUserPackage){
+        connection.release();
+        return errResponse(baseResponse.NO_AUTHORITY);
+      }
 
       //현재 수령 여부 확인
       const currentPackageStatus = await packageDao.currentPackageStatus(connection, [packageIdx]);

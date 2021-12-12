@@ -13,7 +13,10 @@ exports.login = async (id, password, deviceToken) => {
     try{
 
       const isExistUser = await userDao.isExistUser(connection, [id, password]);
-      if (!isExistUser) return errResponse(baseResponse.NOT_EXIST_USER_INFO);
+      if (!isExistUser){
+        connection.release();
+        return errResponse(baseResponse.NOT_EXIST_USER_INFO);
+      }
 
       const userIdx = await userDao.getUserIdx(connection, [id, password]);
       
