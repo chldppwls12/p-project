@@ -7,6 +7,6 @@ module.exports = function(app){
   //택배 도난 여부 변경 API
   app.patch('/device/packages/status', packageController.changeRobbedStatus);
 
-  //택배값 조회 API
-  app.get('/device/packages/status', packageController.getPackageStatus);
+  //수령되지 않은 택배 조회 API
+  app.get('/device/packages/status', packageController.getNotReceivedPackageStatus);
 }
