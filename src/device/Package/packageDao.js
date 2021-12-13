@@ -87,3 +87,13 @@ exports.notReceivedPackage = async (connection) => {
   const [rows] = await connection.query(query);
   return rows;
 }
+
+//유저 deviceToken
+exports.getDeviceToken = async (connection, params) => {
+  const query = `
+  SELECT deviceToken FROM User
+  WHERE userIdx = ?;
+  `;
+  const [rows] = await connection.query(query, params);
+  return rows[0]['deviceToken'];
+}

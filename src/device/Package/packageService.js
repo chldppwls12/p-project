@@ -4,8 +4,14 @@ const {logger} = require('../../../config/winston');
 const {pool} = require('../../../config/database');
 const baseResponse = require('../../../config/baseResponseStatus');
 const axios = require('axios');
+const admin = require('firebase-admin');
+const serviceAccount = require('../../../config/firebase-admin.json');
 
 require('dotenv').config();
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 //userIdx 고정으로 변경
 exports.createPackage = async (imageUrl, trackingNumber, companyCode) => {
@@ -45,6 +51,29 @@ exports.createPackage = async (imageUrl, trackingNumber, companyCode) => {
         await connection.commit();
 
         //fcm 추가하기
+        const deviceToken = await packageDao.getDeviceToken(connection, [userIdx]);
+        if (deviceToken){
+          const message = {
+            notification: {
+              title: 'Parcel Protect',
+              body: '🚚택배가 도착했습니다🚚 지금 바로 확인해보세요'
+            },
+            token: deviceToken
+          }
+
+          admin
+            .messaging()
+            .send(message)
+            .then(function (res){
+              console.log('fcm 전송 성공', res);
+              connection.release();
+              return response(baseResponse.SUCCESS);
+            })
+            .catch((err) => {
+              console.log('fcm 전송 실패', err);
+              return errResponse(baseResponse.FCM_ERROR);
+            })
+        }
 
         connection.release();
         return response(baseResponse.SUCCESS);
@@ -92,6 +121,32 @@ exports.changeRobbedStatus = async (robbedImageUrl, trackingNumber, companyCode)
       await connection.beginTransaction();
       await packageDao.changeToTobbed(connection, [robbedImageUrl, trackingNumber, companyCode]);
       await connection.commit();
+
+      //fcm 추가하기
+      const userIdx = 6;  //고정한 userIdx
+      const deviceToken = await packageDao.getDeviceToken(connection, [userIdx]);
+      if (deviceToken){
+        const message = {
+          notification: {
+            title: 'Parcel Protect',
+            body: '🚨택배 도난이 발생했습니다🚨 도난 내역에서 도난된 택배 정보를 확인해보세요'
+          },
+          token: deviceToken
+        }
+
+        admin
+          .messaging()
+          .send(message)
+          .then((res) => {
+            console.log('fcm 전송 성공', res);
+            connection.release();
+            return response(baseResponse.SUCCESS);
+          })
+          .catch((err) => {
+            console.log('fcm 전송 실패', err);
+            return errResponse(baseResponse.FCM_ERROR);
+          })
+      }
 
       connection.release();
       return response(baseResponse.SUCCESS);

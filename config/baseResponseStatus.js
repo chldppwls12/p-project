@@ -35,5 +35,7 @@ module.exports = {
   IS_ALREADY_CREATED_PACKAGE: {isSuccess: false, code: 3600, message: '이미 등록된 택배입니다'},
   IS_ALREADY_ROBBED_PACKAGE: {isSuccess: false, code: 3601, message: '이미 도난 처리한 택배입니다'},
 
+  FCM_ERROR: {isSuccess: false, code: 3700, message: 'FCM 에러'},
+
   DB_ERROR: {isSuccess: false, code: 4000, message: 'DB 에러'},
 }
