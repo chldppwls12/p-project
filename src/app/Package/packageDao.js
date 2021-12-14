@@ -93,3 +93,16 @@ exports.changeToReceived = async (connection, params) => {
   const [rows] = await connection.query(query, params);
   return rows;
 }
+
+//택배 상세 정보
+exports.getPackageInfo = async (connection, packageIdx) => {
+  const query = `
+  SELECT imageUrl,
+        trackingNumber,
+        DATE_FORMAT(createdAt, '%Y.%m.%d. %k:%i:%s') as createdAt
+  FROM Package
+  WHERE packageIdx = ${packageIdx};
+  `;
+  const [rows] = await connection.query(query);
+  return rows[0];
+}

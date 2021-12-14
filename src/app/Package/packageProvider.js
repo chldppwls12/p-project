@@ -77,3 +77,35 @@ exports.getRobbedPackageList = async (userIdx) => {
     return errResponse(baseResponse.DB_ERROR);
   }
 }
+
+exports.getPackageDetail = async (userIdx, packageIdx) => {
+  try{
+    const connection = await pool.getConnection(async conn => conn);
+    try{
+
+      //존재하는 택배인지
+      const isExistPackageIdx = await packageDao.isExistPackageIdx(connection, packageIdx);
+      if (!isExistPackageIdx){
+        connection.release();
+        return errResponse(baseResponse.INVALID_PACKAGE_IDX);
+      }
+
+      const pacakgeInfo = await packageDao.getPackageInfo(connection, packageIdx);
+      const result = {
+        'imageUrl': pacakgeInfo.imageUrl,
+        'trackingNumber': pacakgeInfo.trackingNumber,
+        'createdAt': pacakgeInfo.createdAt
+      }
+
+      connection.release();
+      return response(baseResponse.SUCCESS, result);
+    }catch(err){
+      connection.release();
+      logger.error(`getAllPackageList DB Query Error: ${err}`);
+      return errResponse(baseResponse.DB_ERROR);
+    }
+  }catch(err){
+    logger.error(`getAllPackageList DB Connection Error: ${err}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}

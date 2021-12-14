@@ -42,3 +42,17 @@ exports.changePackageRecievedStatus = async (req, res) => {
 
   return res.send(changePackageRecievedStatus);
 }
+
+/*
+  API num: 2.4
+  name: 택배 상세 조회 API
+  [GET] /app/packages/:packageIdx
+*/
+exports.getPackageDetail = async (req, res) => {
+  const {userIdx} = req.verifiedToken;
+  const {packageIdx} = req.params;
+
+  const getPackageDetail = await packageProvider.getPackageDetail(userIdx, packageIdx);
+
+  return res.send(getPackageDetail);
+}
