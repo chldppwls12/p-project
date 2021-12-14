@@ -6,8 +6,7 @@ exports.getAllPackageList = async (connection, params) => {
         companyCode,
         trackingNumber,
         imageUrl,
-        IF(robbedAt is null, 'N', 'Y')                as isRobbed,
-        IF(receivedAt is null, 'N', 'Y')                as isReceived
+        IF(receivedAt, 2, IF(robbedAt, 1, 3)) as status
   FROM Package
   WHERE userIdx = ?
   ORDER BY packageIdx DESC;

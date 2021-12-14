@@ -24,8 +24,7 @@ exports.getAllPackageList = async (userIdx) => {
           'companyCode': item.companyCode,
           'trackingNumber': item.trackingNumber,
           'imageUrl': item.imageUrl,
-          'isRobbed': item.isRobbed,
-          'isReceived': item.isReceived
+          'status': item.status
         })
       })
 
